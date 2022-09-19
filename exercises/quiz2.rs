@@ -18,8 +18,6 @@
 // - The output element is going to be a Vector of strings.
 // Execute `rustlings hint quiz2` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 pub enum Command {
     Uppercase,
     Trim,
@@ -30,11 +28,33 @@ mod my_module {
     use super::Command;
 
     // TODO: Complete the function signature!
-    pub fn transformer(input: ???) -> ??? {
+    pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
         // TODO: Complete the output declaration!
-        let mut output: ??? = vec![];
+        let mut output: Vec<String> = vec![];
         for (string, command) in input.iter() {
             // TODO: Complete the function body. You can do it!
+            match command {
+                Command::Uppercase => {
+                    output.push(string.to_uppercase());
+                }
+                Command::Trim => {
+                    let new_str = string.trim();
+                    output.push(new_str.to_string());
+                }
+                // bug: https://stackoverflow.com/questions/57437256/cannot-borrow-as-mutable-as-it-is-behind-a-reference
+                // bug: https://stackoverflow.com/questions/47618823/cannot-borrow-as-mutable-because-it-is-also-borrowed-as-immutable
+                Command::Append(length) => {
+                    let mut x = 0; // x is usize
+                    let mut y = string.clone(); // string is not mutable, so cann't declared as &mut string or &string to borrow the value of string
+                    while x < *length {
+                        // length is &usize
+                        y.push_str("bar");
+                        x += 1;
+                    }
+                    output.push(y.to_string());
+                }
+                _ => {}
+            }
         }
         output
     }
@@ -43,7 +63,7 @@ mod my_module {
 #[cfg(test)]
 mod tests {
     // TODO: What do we have to import to have `transformer` in scope?
-    use ???;
+    use super::my_module::transformer;
     use super::Command;
 
     #[test]
@@ -54,6 +74,7 @@ mod tests {
             ("foo".into(), Command::Append(1)),
             ("bar".into(), Command::Append(5)),
         ]);
+        // println!("output={:#?}", output.clone());
         assert_eq!(output[0], "HELLO");
         assert_eq!(output[1], "all roads lead to rome!");
         assert_eq!(output[2], "foobar");
