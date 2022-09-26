@@ -4,15 +4,17 @@
 // Why not? What should we do to fix it?
 // Execute `rustlings hint errors3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 use std::num::ParseIntError;
 
 fn main() {
     let mut tokens = 100;
     let pretend_user_input = "8";
 
-    let cost = total_cost(pretend_user_input)?;
+    //error here
+    //let cost = total_cost(pretend_user_input)?
+    // you cannot add ? in the main function, because it returns (), but ? suppose to be in a fn which return Result
+
+    let cost = total_cost(pretend_user_input).unwrap(); // unwrap is used to return the value inside Ok()
 
     if cost > tokens {
         println!("You can't afford that many!");
