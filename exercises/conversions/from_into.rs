@@ -35,10 +35,25 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
+// cast to raw pointer error: https://users.rust-lang.org/t/reference-cast-to-raw-pointer/52897
+// split: https://doc.rust-lang.org/std/primitive.str.html#method.split
+// check if string is number, use number.parse::<usize>().is_ok()
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let data: Vec<_> = s.split(",").collect();
+        if data.len() != 2
+            || data[0] == ""
+            || data[1] == ""
+            || !data[1].to_string().parse::<usize>().is_ok()
+        {
+            Person::default()
+        } else {
+            Person {
+                name: data[0].to_string(),
+                age: data[1].to_string().parse::<usize>().unwrap(),
+            }
+        }
     }
 }
 
